@@ -151,7 +151,7 @@
     <div class="brand">
       <img src="images/logo.png" alt="Express Option Logo" class="logo-img" />
       <div>
-        <div class="title">Express Option</div>
+<!--        <div class="title">Express Option</div>-->
 <!--        <div class="tag">Copy & Crypto Trading</div>-->
       </div>
     </div>
@@ -170,19 +170,51 @@
     <section class="hero" id="home" aria-label="Hero">
       <div>
         <span class="eyebrow">Trusted • Transparent • Fast</span>
-        <h1>Smart crypto trading. Copy expert traders. Grow together.</h1>
-        <p class="lead">Follow top-performing traders or deploy automated strategies. Zero hidden fees, lightning-fast execution, and social tools to learn and profit together.</p>
+        <h1>Copy expert traders. Grow together.</h1>
+        <p class="lead">Follow top-performing traders or deploy automated strategies. </p>
         <div class="actions">
-          <button class="cta" onclick="openSignup()">Create Account</button>
+            <a href="soft-ui-dashboard-main/pages/sign-up.html"> <button class="cta">Create Account</button></a>
           <button style="background:transparent;border:1px solid rgba(255,255,255,0.04);padding:9px 12px;border-radius:10px;color:var(--muted);font-weight:700" onclick="document.getElementById('copy').scrollIntoView({behavior:'smooth'})">Explore Strategies</button>
         </div>
-
-        <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
-          <div class="widget" style="display:inline-flex;gap:12px;align-items:center;padding:8px 12px;">
-            <div style="font-weight:800;color:var(--white);">Live</div>
-            <div id="mini-ticker" style="display:flex;gap:10px;"></div>
-          </div>
-        </div>
+<br/>
+     <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank"><span class="blue-text"></span></a><span class="trademark"></span></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+  {
+  "symbols": [
+    {
+      "proName": "FOREXCOM:SPXUSD",
+      "title": "S&P 500 Index"
+    },
+    {
+      "proName": "FOREXCOM:NSXUSD",
+      "title": "US 100 Cash CFD"
+    },
+    {
+      "proName": "FX_IDC:EURUSD",
+      "title": "EUR to USD"
+    },
+    {
+      "proName": "BITSTAMP:BTCUSD",
+      "title": "Bitcoin"
+    },
+    {
+      "proName": "BITSTAMP:ETHUSD",
+      "title": "Ethereum"
+    }
+  ],
+  "colorTheme": "dark",
+  "locale": "en",
+  "largeChartUrl": "",
+  "isTransparent": false,
+  "showSymbolLogo": true,
+  "displayMode": "adaptive"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
       </div>
 
       <aside class="hero-card">
