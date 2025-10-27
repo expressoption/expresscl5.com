@@ -394,7 +394,6 @@
     </div>
   </div>
 
-  <!-- Chat -->
   <div class="chat-toggle">
     <button class="chat-btn" id="chat-open" title="Live Chat">💬</button>
   </div>
@@ -423,6 +422,33 @@
         <a  href="mailto:expressoptionofficial@gmail.com"><button class="cta" id="chat-send">Send</button></a>
     </div>
   </div>
+
+  <script>
+   /* --- Chat logic (demo) --- */
+    const chatOpen = document.getElementById('chat-open');
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose = document.getElementById('chat-close');
+    const chatMin = document.getElementById('chat-minimize');
+    const chatSend = document.getElementById('chat-send');
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+
+    chatOpen.addEventListener('click', ()=>{ chatWindow.style.display='flex'; chatOpen.style.display='none'; scrollChat(); });
+    chatClose.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
+    chatMin.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
+
+    function appendMessage(text, from='bot'){
+      const d = document.createElement('div'); d.className='msg ' + (from==='user'?'user':'bot'); d.textContent = text; chatBody.appendChild(d); scrollChat();
+    }
+    function scrollChat(){ chatBody.scrollTop = chatBody.scrollHeight; }
+    chatSend.addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendChat(); });
+
+    function sendChat(){
+      const v = chatInput.value.trim(); if(!v) return; appendMessage(v,'user'); chatInput.value=''; setTimeout(()=>{ appendMessage('Steeve: Thanks — we received your message: "'+v+'". An agent will reply shortly.','bot'); }, 900);
+    }
+
+  </script>
 
   <script>
     /* --- Loading screen --- */
@@ -491,29 +517,6 @@
     function viewPerf(name){ alert(name + ' performance (demo).'); }
     function openSignup(){ document.getElementById('signup').scrollIntoView({behavior:'smooth'}) }
 
-    /* --- Chat logic (demo) --- */
-    const chatOpen = document.getElementById('chat-open');
-    const chatWindow = document.getElementById('chat-window');
-    const chatClose = document.getElementById('chat-close');
-    const chatMin = document.getElementById('chat-minimize');
-    const chatSend = document.getElementById('chat-send');
-    const chatBody = document.getElementById('chat-body');
-    const chatInput = document.getElementById('chat-input');
-
-    chatOpen.addEventListener('click', ()=>{ chatWindow.style.display='flex'; chatOpen.style.display='none'; scrollChat(); });
-    chatClose.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
-    chatMin.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
-
-    function appendMessage(text, from='bot'){
-      const d = document.createElement('div'); d.className='msg ' + (from==='user'?'user':'bot'); d.textContent = text; chatBody.appendChild(d); scrollChat();
-    }
-    function scrollChat(){ chatBody.scrollTop = chatBody.scrollHeight; }
-    chatSend.addEventListener('click', sendChat);
-    chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendChat(); });
-
-    function sendChat(){
-      const v = chatInput.value.trim(); if(!v) return; appendMessage(v,'user'); chatInput.value=''; setTimeout(()=>{ appendMessage('Steeve: Thanks — we received your message: "'+v+'". An agent will reply shortly.','bot'); }, 900);
-    }
 
     /* --- Crypto news fetch (CryptoCompare public endpoint) --- */
     async function fetchNews(){
