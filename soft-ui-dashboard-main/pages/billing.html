@@ -262,6 +262,9 @@
                 </div>
               </div>
             </div>
+                      <div class="col-6 text-end">
+                      <a class="btn bg-gradient-dark mb-0" href="Untitle.html"><i class="fas fa-plus"></i>&nbsp;&nbsp;Pay with Crypto currency</a>
+                    </div>
               <div class="col-md-12 mb-lg-0 mb-4">
               <div class="card mt-4">
                 <div class="card-header pb-0 p-3">
@@ -435,165 +438,84 @@
       </footer>
     </div>
   </main>
-   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-      height: 100vh;
+  <style>
+          :root{
+      --bg: #0b0b0b;
+      --card: #0f0f10;
+      --muted: #bdbdbd;
+      --white: #ffffff;
+      --accent: #ff7a18;
+      --accent-2: #ff9a3a;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      font-family: Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-
-    /* Floating chat icon */
-    #chat-icon {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #f97316;
-      color: white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 28px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s;
-      z-index: 1000;
-    }
-
-    #chat-icon:hover {
-      background-color: orangered;
-    }
-
-    /* Chat box styling */
-    #chat-box {
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      width: 320px;
-      max-height: 400px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      z-index: 999;
-    }
-
-    .chat-header {
-      background-color: #f97316;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .chat-messages {
-      flex-grow: 1;
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #ddd;
-    }
-
-    .chat-input input {
-      flex-grow: 1;
-      border: none;
-      padding: 10px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .chat-input button {
-      background: #f97316;
-      border: none;
-      color: white;
-      padding: 10px 15px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .chat-input button:hover {
-      background: #f97316;
-    }
-
-    .bot-message {
-      background: #e9f3ff;
-      color: #333;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      width: fit-content;
-    }
-
-    .user-message {
-      background: #f97316;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      align-self: flex-end;
-      width: fit-content;
-    }
+       .cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:9px 14px;border-radius:10px;color:var(--bg);font-weight:800;cursor:pointer}
+    .chat-toggle{position:fixed;right:20px;bottom:20px;z-index:200}
+    .chat-btn{width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,var(--accent),#ffb47a);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(255,122,24,0.15);border:none;cursor:pointer;font-size:26px}
+    .chat-window{position:fixed;right:20px;bottom:96px;width:340px;max-height:520px;background:linear-gradient(180deg,#0d0d0d,#0b0b0b);border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(0,0,0,0.6);overflow:hidden;display:none;flex-direction:column}
+    .chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-bottom:1px solid rgba(255,255,255,0.02)}
+    .chat-body{padding:12px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+    .msg{max-width:78%;padding:10px;border-radius:10px}
+    .msg.user{align-self:flex-end;background:linear-gradient(90deg,var(--accent),#ff9a3a);color:var(--bg)}
+    .msg.bot{align-self:flex-start;background:rgba(255,255,255,0.02);color:var(--muted)}
+    .chat-input{display:flex;padding:10px;border-top:1px solid rgba(255,255,255,0.02);gap:8px}
+    .chat-input input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--white)}
   </style>
-  <div id="chat-icon">💬</div>
+    <div class="chat-toggle">
+    <button class="chat-btn" id="chat-open" title="Live Chat">💬</button>
+  </div>
 
-  <div id="chat-box">
-    <div class="chat-header">Live Chat</div>
-    <div class="chat-messages" id="chat-messages">
-      <div class="bot-message">Hi there! How can I help you today?</div>
+  <div class="chat-window" id="chat-window" role="dialog" aria-hidden="true">
+    <div class="chat-header">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#ffb47a);display:flex;align-items:center;justify-content:center;color:var(--bg);font-weight:800">EO</div>
+        <div>
+          <div style="color:var(--white);font-weight:800">Live Chat</div>
+          <div style="font-size:12px;color:var(--muted)">Online •</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;color:var(--muted)" id="chat-minimize">_</button>
+        <button style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;color:var(--muted)" id="chat-close">×</button>
+      </div>
     </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="msg bot">Hey! 👋 How can I help you with trading or copy trading today?</div>
+    </div>
+
     <div class="chat-input">
-      <input type="text" id="user-input" placeholder="Type a message..." />
-        <a  href="mailto:expressoptionofficial@gmail.com"><button id="send-btn">Send</button></a>
+      <input id="chat-input" placeholder="Type your message..." aria-label="Chat input">
+        <a  href="mailto:expressoptionofficial@gmail.com"><button class="cta" id="chat-send">Send</button></a>
     </div>
   </div>
 
   <script>
-    const chatIcon = document.getElementById('chat-icon');
-    const chatBox = document.getElementById('chat-box');
-    const sendBtn = document.getElementById('send-btn');
-    const userInput = document.getElementById('user-input');
-    const chatMessages = document.getElementById('chat-messages');
+   /* --- Chat logic (demo) --- */
+    const chatOpen = document.getElementById('chat-open');
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose = document.getElementById('chat-close');
+    const chatMin = document.getElementById('chat-minimize');
+    const chatSend = document.getElementById('chat-send');
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
 
-    chatIcon.addEventListener('click', () => {
-      chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
-    });
+    chatOpen.addEventListener('click', ()=>{ chatWindow.style.display='flex'; chatOpen.style.display='none'; scrollChat(); });
+    chatClose.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
+    chatMin.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
 
-    sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-
-    function sendMessage() {
-      const message = userInput.value.trim();
-      if (message === '') return;
-
-      const userMsg = document.createElement('div');
-      userMsg.classList.add('user-message');
-      userMsg.textContent = message;
-      chatMessages.appendChild(userMsg);
-
-      userInput.value = '';
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      // Simple bot reply
-      setTimeout(() => {
-        const botMsg = document.createElement('div');
-        botMsg.classList.add('bot-message');
-        botMsg.textContent = "Thanks for your message! Steeve will get back to you soon 😊";
-        chatMessages.appendChild(botMsg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 600);
+    function appendMessage(text, from='bot'){
+      const d = document.createElement('div'); d.className='msg ' + (from==='user'?'user':'bot'); d.textContent = text; chatBody.appendChild(d); scrollChat();
     }
+    function scrollChat(){ chatBody.scrollTop = chatBody.scrollHeight; }
+    chatSend.addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendChat(); });
+
+    function sendChat(){
+      const v = chatInput.value.trim(); if(!v) return; appendMessage(v,'user'); chatInput.value=''; setTimeout(()=>{ appendMessage('Steeve: Thanks — we received your message: "'+v+'". An agent will reply shortly.','bot'); }, 900);
+    }
+
   </script>
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
