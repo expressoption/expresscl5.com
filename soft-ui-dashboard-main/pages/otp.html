@@ -1,334 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Express Option - Verify Withdrawal</title>
   <style>
     /* === Global Styles === */
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #000000, #1a1a1a);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
+    :root{
+      --bg-1:#000;
+      --bg-2:#1a1a1a;
+      --card:#111;
+      --orange:#ffa500;
+      --orange-dark:#ff8c00;
+      --muted:#ccc;
+      --input-bg:#222;
+    }
+    html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,var(--bg-1),var(--bg-2));color:#fff}
+    .center-wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      box-sizing:border-box;
     }
 
     .container {
-      background: #111;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(255, 140, 0, 0.3);
+      background: rgba(17,17,17,0.98);
+      padding: 36px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(255,140,0,0.15);
       text-align: center;
-      width: 370px;
-      transition: all 0.3s ease;
+      width: 380px;
+      transition: transform .18s ease, box-shadow .18s ease;
     }
+    .container:hover{ transform: translateY(-6px); box-shadow:0 18px 50px rgba(255,140,0,0.22) }
 
-    .container:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 40px rgba(255, 165, 0, 0.6);
-    }
+    .logo{ font-size:20px; font-weight:700; color:var(--orange); margin-bottom:12px; letter-spacing:1px }
+    .logo .highlight{ color:#fff }
 
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffa500;
-      margin-bottom: 15px;
-      letter-spacing: 1px;
-    }
+    h1{ color:var(--orange); font-size:22px; margin:6px 0 10px }
+    p{ color:var(--muted); margin:0 0 22px; font-size:15px; line-height:1.4 }
 
-    .highlight {
-      color: #fff;
+    .input-wrap{ margin-bottom:12px }
+    .input-wrap input{
+      width:80%;
+      padding:12px;
+      border-radius:10px;
+      border:2px solid var(--orange);
+      background:var(--input-bg);
+      color:#fff;
+      outline:none;
+      font-size:15px;
+      text-align:center;
+      box-sizing:border-box;
     }
+    .input-wrap input:focus{ box-shadow:0 0 8px rgba(255,140,0,0.28); border-color:var(--orange-dark) }
 
-    h1 {
-      color: #ffa500;
-      font-size: 24px;
-      margin-bottom: 10px;
+    .actions{ margin-top:6px }
+    button.primary{
+      padding:12px 26px;
+      border-radius:10px;
+      border:0;
+      background:var(--orange);
+      color:#000;
+      font-weight:700;
+      cursor:pointer;
+      font-size:15px;
     }
+    button.primary:hover{ background:var(--orange-dark) }
+    button.primary[type="submit"]{ /* safety - not used here */ }
 
-    p {
-      color: #ccc;
-      font-size: 16px;
-      margin-bottom: 25px;
+    .message{
+      margin-top:18px;
+      min-height:28px;
+      font-weight:700;
+      font-size:15px;
     }
+    .message.success{ color:#00ff66 }
+    .message.fail{ color:#ff6b6b }
 
-    input {
-      width: 80%;
-      padding: 12px;
-      border: 2px solid #ffa500;
-      border-radius: 10px;
-      outline: none;
-      font-size: 16px;
-      text-align: center;
-      margin-bottom: 15px;
-      color: #fff;
-      background: #222;
+    /* Loader */
+    .loader{
+      display:inline-block;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      border:3px solid rgba(255,255,255,0.12);
+      border-top-color:var(--orange);
+      animation:spin 0.9s linear infinite;
+      vertical-align:middle;
+      margin-right:8px;
     }
-
-    input:focus {
-      border-color: #ff8c00;
-      box-shadow: 0 0 8px rgba(255, 165, 0, 0.5);
-    }
-
-    button {
-      padding: 12px 25px;
-      background: #ffa500;
-      color: black;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #ff8c00;
-    }
-
-    .message {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-      min-height: 25px;
-    }
-
-    .success {
-      color: #00ff66;
-    }
-
-    .fail {
-      color: #ff3333;
-    }
-
-    /* === Loader Animation === */
-    .loader {
-      border: 4px solid #333;
-      border-top: 4px solid #ffa500;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      margin-top: 10px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin{ to{ transform:rotate(360deg) } }
 
     /* === Live Chat === */
-    .chat-icon {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #ffa500;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #000;
-      font-size: 30px;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
-      transition: transform 0.3s, box-shadow 0.3s;
+    .chat-icon{
+      position:fixed;
+      right:28px;
+      bottom:28px;
+      width:62px;
+      height:62px;
+      border-radius:50%;
+      background:var(--orange);
+      color:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      cursor:pointer;
+      box-shadow:0 8px 30px rgba(255,165,0,0.25);
+      z-index:9999;
     }
-
-    .chat-icon:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px rgba(255, 165, 0, 0.7);
+    .chat-box{
+      position:fixed;
+      right:28px;
+      bottom:100px;
+      width:320px;
+      max-width:calc(100% - 56px);
+      background:var(--card);
+      border:2px solid var(--orange);
+      border-radius:12px;
+      display:none; /* toggled to flex in JS */
+      flex-direction:column;
+      overflow:hidden;
+      box-shadow:0 18px 60px rgba(255,140,0,0.18);
+      z-index:9999;
     }
-
-    .chat-box {
-      position: fixed;
-      bottom: 100px;
-      right: 30px;
-      background: #111;
-      border: 2px solid #ffa500;
-      border-radius: 15px;
-      width: 300px;
-      display: none;
-      flex-direction: column;
-      box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
-      overflow: hidden;
+    .chat-header{
+      background:var(--orange);
+      color:#000;
+      padding:10px 12px;
+      font-weight:700;
+      position:relative;
+      text-align:center;
     }
-
-    .chat-header {
-      background: #ffa500;
-      color: #000;
-      padding: 10px;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      text-align: center;
-      font-weight: bold;
-      position: relative;
+    .chat-close{
+      position:absolute;
+      right:8px;
+      top:6px;
+      background:none;
+      border:0;
+      font-size:18px;
+      cursor:pointer;
     }
-
-    .close-chat {
-      position: absolute;
-      right: 10px;
-      top: 5px;
-      color: #000;
-      background: none;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
+    .chat-body{
+      padding:12px;
+      height:220px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      color:#fff;
+      background:linear-gradient(180deg,#0f0f0f,#181818);
     }
-
-    .chat-body {
-      padding: 10px;
-      color: #fff;
-      height: 200px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .msg{ background:#222; padding:8px 10px; border-radius:8px; max-width:78%; word-wrap:break-word; font-size:14px }
+    .msg.user{ background:var(--orange); color:#000; align-self:flex-end }
+    .chat-footer{ display:flex; gap:6px; border-top:1px solid rgba(255,165,0,0.08) }
+    .chat-footer input{
+      flex:1; padding:12px; border:0; outline:none; background:#191919; color:#fff; font-size:14px
     }
+    .chat-footer button{ padding:0 14px; background:var(--orange); border:0; color:#000; cursor:pointer; font-weight:700 }
 
-    .chat-message {
-      background: #222;
-      padding: 8px 12px;
-      border-radius: 8px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-
-    .chat-message.user {
-      background: #ffa500;
-      color: #000;
-      align-self: flex-end;
-    }
-
-    .chat-footer {
-      display: flex;
-      border-top: 1px solid #ffa500;
-    }
-
-    .chat-footer input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      outline: none;
-      background: #222;
-      color: white;
-    }
-
-    .chat-footer button {
-      background: #ffa500;
-      border: none;
-      color: black;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .chat-footer button:hover {
-      background: #ff8c00;
+    /* small screens adjust */
+    @media (max-width:420px){
+      .container{ width:92% }
+      .chat-body{ height:180px }
     }
   </style>
 </head>
 <body>
+  <div class="center-wrap">
+    <div class="container" role="main" aria-labelledby="pageTitle">
+      <div class="logo">Express <span class="highlight">Option</span></div>
+      <h1 id="pageTitle">Withdrawal Successful</h1>
+      <p>Your withdrawal has been approved.<br>Please verify your identity with the OTP code below.</p>
 
-  <!-- === Verification Section === -->
-  <div class="container">
-    <div class="logo">Express <span class="highlight">Option</span></div>
-    <h1>Withdrawal Successful</h1>
-    <p>Your withdrawal has been approved.<br>
-       Please verify your identity with the OTP code below.</p>
+      <div class="input-wrap">
+        <input id="codeInput" name="otp" type="password" inputmode="numeric" placeholder="Enter OTP code" aria-label="OTP code" />
+      </div>
 
-    <input type="password" id="codeInput" placeholder="Enter OTP code">
-    <br>
-    <button onclick="checkCode()">Verify</button>
+      <div class="actions">
+        <!-- type="button" prevents accidental form submit behavior in some contexts -->
+        <button id="verifyBtn" class="primary" type="button">Verify</button>
+      </div>
 
-    <div id="message" class="message"></div>
+      <div id="message" class="message" aria-live="polite"></div>
+    </div>
   </div>
 
-  <!-- === Live Chat Icon === -->
-   <div class="chat-toggle">
-    <button class="chat-btn" id="chat-open" title="Live Chat">💬</button>
-  </div>
+  <!-- chat icon -->
+  <div id="chatIcon" class="chat-icon" title="Open chat">💬</div>
 
-  <div class="chat-window" id="chat-window" role="dialog" aria-hidden="true">
+  <!-- chat box -->
+  <div id="chatBox" class="chat-box" role="dialog" aria-label="Live chat with Steeve">
     <div class="chat-header">
-      <div style="display:flex;gap:10px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#ffb47a);display:flex;align-items:center;justify-content:center;color:var(--bg);font-weight:800">EO</div>
-        <div>
-          <div style="color:var(--white);font-weight:800">Live Chat</div>
-          <div style="font-size:12px;color:var(--muted)">Online •</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;color:var(--muted)" id="chat-minimize">_</button>
-        <button style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;color:var(--muted)" id="chat-close">×</button>
-      </div>
+      Chat with Steeve
+      <button id="chatClose" class="chat-close" aria-label="Close chat">×</button>
+    </div>
+    <div id="chatBody" class="chat-body" aria-live="polite">
+      <div class="msg">👋 Hello! How can I help you today?</div>
     </div>
 
-    <div class="chat-body" id="chat-body">
-      <div class="msg bot">Hey! 👋 How can I help you with trading or copy trading today?</div>
-    </div>
-
-    <div class="chat-input">
-      <input id="chat-input" placeholder="Type your message..." aria-label="Chat input">
-        <a  href="mailto:expressoptionofficial@gmail.com"><button class="cta" id="chat-send">Send</button></a>
+    <div class="chat-footer">
+      <input id="chatInput" type="text" placeholder="Type a message..." aria-label="Type a message">
+      <button id="chatSend" type="button">Send</button>
     </div>
   </div>
-  <style>
-          :root{
-      --bg: #0b0b0b;
-      --card: #0f0f10;
-      --muted: #bdbdbd;
-      --white: #ffffff;
-      --accent: #ff7a18;
-      --accent-2: #ff9a3a;
-      --glass: rgba(255,255,255,0.03);
-      --glass-2: rgba(255,255,255,0.02);
-      font-family: Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-       .cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:9px 14px;border-radius:10px;color:var(--bg);font-weight:800;cursor:pointer}
-    .chat-toggle{position:fixed;right:20px;bottom:20px;z-index:200}
-    .chat-btn{width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,var(--accent),#ffb47a);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(255,122,24,0.15);border:none;cursor:pointer;font-size:26px}
-    .chat-window{position:fixed;right:20px;bottom:96px;width:340px;max-height:520px;background:linear-gradient(180deg,#0d0d0d,#0b0b0b);border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(0,0,0,0.6);overflow:hidden;display:none;flex-direction:column}
-    .chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-bottom:1px solid rgba(255,255,255,0.02)}
-    .chat-body{padding:12px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:8px}
-    .msg{max-width:78%;padding:10px;border-radius:10px}
-    .msg.user{align-self:flex-end;background:linear-gradient(90deg,var(--accent),#ff9a3a);color:var(--bg)}
-    .msg.bot{align-self:flex-start;background:rgba(255,255,255,0.02);color:var(--muted)}
-    .chat-input{display:flex;padding:10px;border-top:1px solid rgba(255,255,255,0.02);gap:8px}
-    .chat-input input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--white)}
-  </style>
+
   <script>
-   /* --- Chat logic (demo) --- */
-    const chatOpen = document.getElementById('chat-open');
-    const chatWindow = document.getElementById('chat-window');
-    const chatClose = document.getElementById('chat-close');
-    const chatMin = document.getElementById('chat-minimize');
-    const chatSend = document.getElementById('chat-send');
-    const chatBody = document.getElementById('chat-body');
-    const chatInput = document.getElementById('chat-input');
+    document.addEventListener('DOMContentLoaded', function () {
+      // Elements
+      const verifyBtn = document.getElementById('verifyBtn');
+      const codeInput = document.getElementById('codeInput');
+      const messageEl = document.getElementById('message');
 
-    chatOpen.addEventListener('click', ()=>{ chatWindow.style.display='flex'; chatOpen.style.display='none'; scrollChat(); });
-    chatClose.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
-    chatMin.addEventListener('click', ()=>{ chatWindow.style.display='none'; chatOpen.style.display='inline-flex'; });
+      const chatIcon = document.getElementById('chatIcon');
+      const chatBox = document.getElementById('chatBox');
+      const chatClose = document.getElementById('chatClose');
+      const chatBody = document.getElementById('chatBody');
+      const chatInput = document.getElementById('chatInput');
+      const chatSend = document.getElementById('chatSend');
 
-    function appendMessage(text, from='bot'){
-      const d = document.createElement('div'); d.className='msg ' + (from==='user'?'user':'bot'); d.textContent = text; chatBody.appendChild(d); scrollChat();
-    }
-    function scrollChat(){ chatBody.scrollTop = chatBody.scrollHeight; }
-    chatSend.addEventListener('click', sendChat);
-    chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendChat(); });
+      // Correct OTP
+      const CORRECT_CODE = '5675';
 
-    function sendChat(){
-      const v = chatInput.value.trim(); if(!v) return; appendMessage(v,'user'); chatInput.value=''; setTimeout(()=>{ appendMessage('Steeve: Thanks — we received your message: "'+v+'". An agent will reply shortly.','bot'); }, 900);
-    }
+      // Attach click handler for Verify button (robust)
+      verifyBtn.addEventListener('click', function () {
+        // read trimmed value
+        const val = (codeInput.value || '').trim();
 
+        // show loader + processing text
+        messageEl.innerHTML = '<span class="loader" aria-hidden="true"></span><span>Processing...</span>';
+        messageEl.className = 'message';
+
+        // short delay to simulate processing (2s)
+        setTimeout(() => {
+          if (val === CORRECT_CODE) {
+            messageEl.textContent = '✅ Successful! You will receive your fund within 10 minutes.';
+            messageEl.className = 'message success';
+          } else {
+            messageEl.textContent = '❌ Failed! Incorrect code.';
+            messageEl.className = 'message fail';
+          }
+        }, 2000);
+      });
+
+      // Allow Enter key within the OTP input to trigger verification
+      codeInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          verifyBtn.click();
+        }
+      });
+
+      /* === Chat behavior === */
+      function openChat(){
+        chatBox.style.display = 'flex';
+        // ensure direction column layout
+        chatBox.style.flexDirection = 'column';
+        chatInput.focus();
+      }
+      function closeChat(){
+        chatBox.style.display = 'none';
+      }
+
+      chatIcon.addEventListener('click', function () {
+        if (chatBox.style.display === 'flex') closeChat(); else openChat();
+      });
+      chatClose.addEventListener('click', closeChat);
+
+      // send chat message
+      function appendUserMessage(text){
+        const d = document.createElement('div');
+        d.className = 'msg user';
+        d.textContent = text;
+        chatBody.appendChild(d);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+      function appendBotMessage(text){
+        const d = document.createElement('div');
+        d.className = 'msg';
+        d.textContent = text;
+        chatBody.appendChild(d);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      chatSend.addEventListener('click', function(){
+        const text = (chatInput.value || '').trim();
+        if (!text) return;
+        appendUserMessage(text);
+        chatInput.value = '';
+        // simple auto-reply
+        setTimeout(() => {
+          appendBotMessage('Steeve: Thanks — I\'ll assist you shortly.');
+        }, 800);
+      });
+
+      // allow Enter key in chat input
+      chatInput.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          chatSend.click();
+        }
+      });
+
+      // Accessibility: close chat with Escape
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && chatBox.style.display === 'flex') closeChat();
+      });
+    });
   </script>
-
 </body>
 </html>
